@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Document | AutoDoc.AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 30px;
+    }
+    nav {
+      margin-bottom: 30px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+    }
+    .option {
+      margin: 20px;
+      padding: 20px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      display: inline-block;
+      width: 200px;
+      cursor: pointer;
+      transition: 0.2s;
+      background-color: white;
+    }
+    .option:hover {
+      background-color: #eef;
+      transform: scale(1.05);
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="resume.html">📄 Resume</a>
+    <a href="doc.html">📚 Docs</a>
+  </nav>
+
+  <h1>Select a Document to Create</h1>
+
+  <div class="option" onclick="window.location.href='resume.html'">📄 Resume</div>
+  <div class="option" onclick="window.location.href='#'">🧾 Invoice</div>
+  <div class="option" onclick="window.location.href='#'">⚖️ Legal Doc</div>
+
+  <footer>
+    <p>Made by Mohammed Kizar 🚀</p>
+  </footer>
+
+</body>
+</html>

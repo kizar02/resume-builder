@@ -1,0 +1,44 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa;
+  color: #333;
+  text-align: center;
+}
+
+header {
+  padding: 50px 20px;
+  background: #3d5afe;
+  color: white;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background: #00e676;
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.features {
+  padding: 40px 20px;
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.features li {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+footer {
+  padding: 20px;
+  background: #eee;
+}

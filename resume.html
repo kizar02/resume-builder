@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Resume</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 50px;
+    }
+    nav {
+      margin-bottom: 30px;
+    }
+    nav a {
+      margin-right: 20px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="doc.html">📚 Docs</a>
+    <a href="resume.html">📄 Resume</a>
+  </nav>
+
+  <h1>Create Your Resume</h1>
+
+  <form id="resumeForm">
+    <label>Full Name</label>
+    <input type="text" id="name" required />
+
+    <label>Email</label>
+    <input type="email" id="email" required />
+
+    <label>Phone</label>
+    <input type="text" id="phone" required />
+
+    <label>Skills (comma separated)</label>
+    <input type="text" id="skills" required />
+
+    <label>Experience</label>
+    <textarea id="experience" rows="4"></textarea>
+
+    <label>Education</label>
+    <textarea id="education" rows="3"></textarea>
+
+    <button type="submit">Generate Preview</button>
+  </form>
+
+  <div id="preview" style="margin-top: 40px; display: none;">
+    <h2>Resume Preview</h2>
+    <button id="downloadBtn" style="margin-top: 15px;">Download as PDF</button>
+    <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;" id="output"></div>
+  </div>
+
+  <!-- PDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    window.onload = function () {
+      const form = document.getElementById('resumeForm');
+      const previewDiv = document.getElementById('preview');
+      const outputDiv = document.getElementById('output');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const skills = document.getElementById('skills').value;
+        const experience = document.getElementById('experience').value;
+        const education = document.getElementById('education').value;
+
+        outputDiv.innerHTML = `
+          <h3>${name}</h3>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Skills:</strong> ${skills}</p>
+          <p><strong>Experience:</strong><br>${experience.replace(/\n/g, "<br>")}</p>
+          <p><strong>Education:</strong><br>${education.replace(/\n/g, "<br>")}</p>
+        `;
+
+        previewDiv.style.display = 'block';
+      });
+
+      downloadBtn.addEventListener('click', function () {
+        const resume = document.getElementById('output');
+
+        const opt = {
+          margin:       0.5,
+          filename:     'resume.pdf',
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2 },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(resume).save();
+      });
+    };
+  </script>
+
+</body>
+</html>
