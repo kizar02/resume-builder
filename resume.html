@@ -2,125 +2,205 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Create Resume</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 50px;
-    }
-    nav {
-      margin-bottom: 30px;
-    }
-    nav a {
-      margin-right: 20px;
-      text-decoration: none;
-      color: #007bff;
-      font-weight: bold;
-    }
-    label {
-      display: block;
-      margin: 15px 0 5px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - AutoDoc.AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
-<body>
-
-  <nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="doc.html">📚 Docs</a>
-    <a href="resume.html">📄 Resume</a>
+<body class="bg-gray-100 font-sans">
+  <!-- Navigation -->
+  <nav class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="index.html" class="text-xl font-bold">AutoDoc.AI</a>
+      <div class="space-x-4">
+        <a href="index.html" class="hover:underline">🏠 Home</a>
+        <a href="resume.html" class="hover:underline">📄 Resume</a>
+        <a href="docs.html" class="hover:underline">📚 Docs</a>
+      </div>
+    </div>
   </nav>
 
-  <h1>Create Your Resume</h1>
+  <!-- Main Content -->
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6">Create Your Resume</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Resume Form -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <form id="resumeForm" class="space-y-4">
+          <div>
+            <label for="template" class="block text-sm font-medium text-gray-700">Select Template</label>
+            <select id="template" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option value="modern">Modern</option>
+              <option value="professional">Professional</option>
+              <option value="simple">Simple</option>
+            </select>
+          </div>
+          <div>
+            <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" id="fullName" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+            <input type="tel" id="phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div>
+            <label for="skills" class="block text-sm font-medium text-gray-700">Skills (comma-separated)</label>
+            <textarea id="skills" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          <div>
+            <label for="experience" class="block text-sm font-medium text-gray-700">Experience</label>
+            <textarea id="experience" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          <div>
+            <label for="education" class="block text-sm font-medium text-gray-700">Education</label>
+            <textarea id="education" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          <button type="button" onClick="generatePreview()" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">Generate Preview</button>
+          <button type="button" onClick="downloadPDF()" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 mt-2">Download PDF</button>
+        </form>
+      </div>
 
-  <form id="resumeForm">
-    <label>Full Name</label>
-    <input type="text" id="name" required />
+      <!-- Resume Preview -->
+      <div id="resumePreview" class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4">Resume Preview</h2>
+        <div id="previewContent"></div>
+      </div>
+    </div>
 
-    <label>Email</label>
-    <input type="email" id="email" required />
-
-    <label>Phone</label>
-    <input type="text" id="phone" required />
-
-    <label>Skills (comma separated)</label>
-    <input type="text" id="skills" required />
-
-    <label>Experience</label>
-    <textarea id="experience" rows="4"></textarea>
-
-    <label>Education</label>
-    <textarea id="education" rows="3"></textarea>
-
-    <button type="submit">Generate Preview</button>
-  </form>
-
-  <div id="preview" style="margin-top: 40px; display: none;">
-    <h2>Resume Preview</h2>
-    <button id="downloadBtn" style="margin-top: 15px;">Download as PDF</button>
-    <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;" id="output"></div>
+    <!-- AI Summary Generator -->
+    <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-bold mb-4">✨ AI-Powered Summary Generator</h2>
+      <form id="summaryForm" class="space-y-4">
+        <div>
+          <label for="jobRole" class="block text-sm font-medium text-gray-700">Job Role</label>
+          <input type="text" id="jobRole" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label for="keySkills" class="block text-sm font-medium text-gray-700">Key Skills</label>
+          <textarea id="keySkills" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
+        <button type="button" onClick="generateSummary()" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">Generate Summary</button>
+      </form>
+      <div id="summaryContent" class="mt-4"></div>
+    </div>
   </div>
 
-  <!-- PDF Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center p-4 mt-8">
+    <p>Made by Mohammed Kizar 🚀</p>
+  </footer>
 
-  <script>
-    window.onload = function () {
-      const form = document.getElementById('resumeForm');
-      const previewDiv = document.getElementById('preview');
-      const outputDiv = document.getElementById('output');
-      const downloadBtn = document.getElementById('downloadBtn');
+  <script type="text/babel">
+    const templates = {
+      modern: { font: 'Arial', color: 'text-blue-800', border: 'border-l-4 border-blue-600' },
+      professional: { font: 'Times New Roman', color: 'text-gray-900', border: '' },
+      simple: { font: 'Helvetica', color: 'text-black', border: 'border-b-2 border-gray-300' }
+    };
 
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
+    function generatePreview() {
+      const template = document.getElementById('template').value;
+      const fullName = document.getElementById('fullName').value || 'Your Name';
+      const email = document.getElementById('email').value || 'your.email@example.com';
+      const phone = document.getElementById('phone').value || '123-456-7890';
+      const skills = document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s);
+      const experience = document.getElementById('experience').value || 'Your experience here...';
+      const education = document.getElementById('education').value || 'Your education here...';
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const skills = document.getElementById('skills').value;
-        const experience = document.getElementById('experience').value;
-        const education = document.getElementById('education').value;
+      // Save to local storage
+      localStorage.setItem('resumeData', JSON.stringify({ template, fullName, email, phone, skills, experience, education }));
 
-        outputDiv.innerHTML = `
-          <h3>${name}</h3>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Skills:</strong> ${skills}</p>
-          <p><strong>Experience:</strong><br>${experience.replace(/\n/g, "<br>")}</p>
-          <p><strong>Education:</strong><br>${education.replace(/\n/g, "<br>")}</p>
-        `;
+      const previewContent = (
+        <div className={`p-4 ${templates[template].color} ${templates[template].border}`} style={{ fontFamily: templates[template].font }}>
+          <h3 className="text-lg font-bold">{fullName}</h3>
+          <p>{email} | {phone}</p>
+          <h4 className="font-semibold mt-4">Skills</h4>
+          <ul className="list-disc pl-5">
+            {skills.map((skill, index) => (
+              <li key={index}>{skill}</li>
+            ))}
+          </ul>
+          <h4 className="font-semibold mt-4">Experience</h4>
+          <p>{experience}</p>
+          <h4 className="font-semibold mt-4">Education</h4>
+          <p>{education}</p>
+        </div>
+      );
 
-        previewDiv.style.display = 'block';
-      });
+      ReactDOM.render(previewContent, document.getElementById('previewContent'));
+    }
 
-      downloadBtn.addEventListener('click', function () {
-        const resume = document.getElementById('output');
+    function generateSummary() {
+      const jobRole = document.getElementById('jobRole').value || 'Software Engineer';
+      const keySkills = document.getElementById('keySkills').value || 'Relevant skills...';
 
-        const opt = {
-          margin:       0.5,
-          filename:     'resume.pdf',
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2 },
-          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+      // Placeholder AI summary (replace with Hugging Face or OpenAI API)
+      const summary = `Dynamic ${jobRole} with expertise in ${keySkills}. Proven ability to deliver high-quality solutions tailored to industry needs.`;
 
-        html2pdf().set(opt).from(resume).save();
-      });
+      const summaryContent = (
+        <div>
+          <h4 className="font-semibold">Professional Summary</h4>
+          <p>{summary}</p>
+        </div>
+      );
+
+      ReactDOM.render(summaryContent, document.getElementById('summaryContent'));
+    }
+
+    async function downloadPDF() {
+      const { PDFDocument } = PDFLib;
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595, 842]); // A4 size
+      const { width, height } = page.getSize();
+      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const template = document.getElementById('template').value;
+      const fullName = document.getElementById('fullName').value || 'Your Name';
+      const email = document.getElementById('email').value || 'your.email@example.com';
+      const phone = document.getElementById('phone').value || '123-456-7890';
+      const skills = document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s).join(', ');
+      const experience = document.getElementById('experience').value || 'Your experience here...';
+      const education = document.getElementById('education').value || 'Your education here...';
+      const summary = document.getElementById('summaryContent').textContent || 'Dynamic professional...';
+
+      page.drawText(fullName, { x: 50, y: height - 50, size: 20, font });
+      page.drawText(`${email} | ${phone}`, { x: 50, y: height - 80, size: 12, font });
+      page.drawText('Professional Summary', { x: 50, y: height - 110, size: 14, font });
+      page.drawText(summary, { x: 50, y: height - 130, size: 12, font, maxWidth: 500, lineHeight: 14 });
+      page.drawText('Skills', { x: 50, y: height - 200, size: 14, font });
+      page.drawText(skills, { x: 50, y: height - 220, size: 12, font, maxWidth: 500, lineHeight: 14 });
+      page.drawText('Experience', { x: 50, y: height - 300, size: 14, font });
+      page.drawText(experience, { x: 50, y: height - 320, size: 12, font, maxWidth: 500, lineHeight: 14 });
+      page.drawText('Education', { x: 50, y: height - 400, size: 14, font });
+      page.drawText(education, { x: 50, y: height - 420, size: 12, font, maxWidth: 500, lineHeight: 14 });
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'resume.pdf';
+      link.click();
+    }
+
+    // Load saved data from local storage
+    window.onload = () => {
+      const savedData = JSON.parse(localStorage.getItem('resumeData') || '{}');
+      if (savedData) {
+        document.getElementById('template').value = savedData.template || 'modern';
+        document.getElementById('fullName').value = savedData.fullName || '';
+        document.getElementById('email').value = savedData.email || '';
+        document.getElementById('phone').value = savedData.phone || '';
+        document.getElementById('skills').value = savedData.skills ? savedData.skills.join(', ') : '';
+        document.getElementById('experience').value = savedData.experience || '';
+        document.getElementById('education').value = savedData.education || '';
+        generatePreview();
+      }
     };
   </script>
-
 </body>
 </html>
